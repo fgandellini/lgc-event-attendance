@@ -1,0 +1,22 @@
+{
+  "name": "lgc-event-attendance",
+  "version": "0.0.1",
+  "authors": [
+    "Federico Gandellini <fgandellini@gmail.com>"
+  ],
+  "description": "A ionic app to keep tracking of LGC singers for each event",
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angularjs-mongolab": "~1.0.0-RC1",
+    "lodash": "~2.4.1"
+  }
+}
