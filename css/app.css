@@ -15,3 +15,5 @@ textarea { height: 200px; }
 .a { color: #008000; }
 .t { color: #0000ff; }
 .b { color: #000042; }
+
+.notes { font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; }
