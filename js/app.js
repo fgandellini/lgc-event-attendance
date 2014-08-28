@@ -2,6 +2,14 @@
 /* global alert, angular, _ */
 'use strict';
 
+var services = angular.module('lgcAttendance.services', ['config', 'mongolabResourceHttp']);
+
+services.factory('Events', ['$mongolabResourceHttp',
+  function($mongolabResourceHttp) {
+    return $mongolabResourceHttp('events');
+  }
+]);
+
 var app = angular.module('lgcAttendance', ['config', 'ionic', 'lgcAttendance.services']);
 
 app.filter('newlines', function() {
