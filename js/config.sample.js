@@ -1,5 +1,7 @@
 var config = angular.module('config', []);
 
+config.constant('AUTH_TOKEN', 'admin-mode-token');
+
 config.constant('MONGOLAB_CONFIG', {
   API_KEY: 'mongolab-api-key',
   DB_NAME: 'da_name'
