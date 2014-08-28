@@ -3,7 +3,7 @@ var app = angular.module('lgcAttendance', ['config', 'ionic', 'lgcAttendance.ser
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('events', {
-      url: '/events',
+      url: '/events?token',
       templateUrl: 'events.html'
     })
     .state('new', {
@@ -18,8 +18,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise("/events");
 });
 
-app.controller('EventsCtrl', ['SINGERS', '$scope', '$state', '$ionicModal', 'Events',
-  function(SINGERS, $scope, $state, $ionicModal, Events) {
+app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', 'Events',
+  function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, Events) {
+
+    $rootScope.adminMode = ($stateParams.token === AUTH_TOKEN);
+
     $scope.showDelete = false;
     $scope.listCanSwipe = true;
 
@@ -37,21 +40,42 @@ app.controller('EventsCtrl', ['SINGERS', '$scope', '$state', '$ionicModal', 'Eve
       animation: 'slide-in-up'
     });
 
+    var showLoading = function() {
+      $ionicLoading.show({
+        template: '<i class="icon ion-loading-c loader"></i>'
+      });
+    };
+
+    var hideLoading = function() {
+      $ionicLoading.hide();
+    };
+
+    showLoading();
+
     Events.all().then(function(events) {
       _.map(events, function(event) {
-        event.attendance = formatAttendanceAbsValues(event.attendees);
+        event.attendance = _.countBy(_.filter(event.attendees, 'confirmed'), 'role');
+        if (_.isEmpty(event.attendance)) {
+          event.attendance = null;
+        }
         return event;
       });
-      $scope.events = events;
+      $scope.events = _.sortBy(events, 'date');
+      hideLoading();
+    }, function() {
+      //$rootScope.adminMode = false;
+      $scope.events = [];
+      hideLoading();
+      alert(':(\nNon riesco a contattare il database!\nRiprova tra qualche istante.');
     });
 
     var formatAttendanceAbsValues = function(attendees) {
       var confirmed = _.countBy(_.filter(attendees, 'confirmed'), 'role');
-      return formatAttendanceRole('S', confirmed.s) +
-        formatAttendanceRole('MS', confirmed.ms) +
-        formatAttendanceRole('A', confirmed.a) +
-        formatAttendanceRole('T', confirmed.t) +
-        formatAttendanceRole('B', confirmed.b);
+      return formatAttendanceRole('s', confirmed.s) +
+        formatAttendanceRole('ms', confirmed.ms) +
+        formatAttendanceRole('a', confirmed.a) +
+        formatAttendanceRole('t', confirmed.t) +
+        formatAttendanceRole('b', confirmed.b);
     };
 
     var formatAttendanceRole = function(role, confirmed) {
@@ -77,16 +101,22 @@ app.controller('EventsCtrl', ['SINGERS', '$scope', '$state', '$ionicModal', 'Eve
       return Math.ceil(c * 100.0 / total);
     };
 
+    $scope.toggleDelete = function() {
+      $scope.showDelete = !$scope.showDelete;
+    };
+
     $scope.createEvent = function(event) {
-      var now = new Date();
       var e = event || {};
       var newEvent = new Events();
 
       newEvent.type = e.type || 'generic';
       newEvent.name = e.name || 'Evento LGC';
-      newEvent.date = e.date || extractDate(now);
-      newEvent.time = e.time || extractTime(now);
-      newEvent.location = e.location || 'Luogo da definire';
+      newEvent.date = e.date || null;
+      newEvent.time = e.time || null;
+      newEvent.location = e.location || null;
+      newEvent.clothing = e.clothing || null;
+      newEvent.meetingTime = e.meetingTime || null;
+      newEvent.notes = e.notes || null;
       newEvent.attendees = initAttendees();
 
       newEvent.$save().then(function(event) {
@@ -116,16 +146,18 @@ app.controller('EventsCtrl', ['SINGERS', '$scope', '$state', '$ionicModal', 'Eve
     };
 
     $scope.updateEvent = function(event) {
-      var now = new Date();
-
       event.type = event.type || 'generic';
       event.name = event.name || 'Evento LGC';
-      event.date = event.date || extractDate(now);
-      event.time = event.time || extractTime(now);
-      event.location = event.location || 'Luogo da definire';
+      event.date = event.date || null;
+      event.time = event.time || null;
+      event.location = event.location || null;
+      event.clothing = event.clothing || null;
+      event.meetingTime = event.meetingTime || null;
+      event.notes = event.notes || null;
 
       event.$update().then(function(event) {
         $scope.event = null;
+        $scope.events = _.sortBy($scope.events, 'date');
         $scope.editEventModal.hide();
       });
 
@@ -137,6 +169,7 @@ app.controller('EventsCtrl', ['SINGERS', '$scope', '$state', '$ionicModal', 'Eve
         _.remove($scope.events, function(e) {
           return e.$id() === removedEventId;
         });
+        $scope.events = _.sortBy($scope.events, 'date');
       });
     };
 
