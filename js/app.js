@@ -48,8 +48,28 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
     $scope.showDelete = false;
     $scope.listCanSwipe = true;
 
-    $scope.toggleDelete = function() {
-      $scope.showDelete = !$scope.showDelete;
+    var updateCurrentDayTime = function() {
+      var now = new Date().toISOString();
+      $scope.now = now.slice(0, 10) + ' ' + now.slice(11, 16);
+    };
+
+    var getPastSortedEvents = function(allEvents) {
+      updateCurrentDayTime();
+      return _.sortBy(_.filter(allEvents, function(e) {
+        return (e.date + ' ' + e.time) < $scope.now;
+      }), ['date', 'time']);
+    };
+
+    var getUpcomingSortedEvents = function(allEvents) {
+      updateCurrentDayTime();
+      return _.sortBy(_.filter(allEvents, function(e) {
+        return (e.date + ' ' + e.time) >= $scope.now;
+      }), ['date', 'time']);
+    };
+
+    var updateEventLists = function(allEvents) {
+      $scope.upcomingEvents = getUpcomingSortedEvents(allEvents);
+      $scope.pastEvents = getPastSortedEvents(allEvents);
     };
 
     $ionicModal.fromTemplateUrl('event-popup.html', {
@@ -58,6 +78,10 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
     }).then(function(modal) {
       $scope.eventPopup = modal;
     });
+
+    $scope.toggleDelete = function() {
+      $scope.showDelete = !$scope.showDelete;
+    };
 
     $scope.openEventPopup = function(event) {
       $scope.showDelete = false;
@@ -88,6 +112,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         newEvent.attendees = initAttendees();
         newEvent.$save().then(function(evt) {
           $scope.events.push(evt);
+          updateEventLists($scope.events);
           $scope.eventPopup.hide();
         });
       } else { // update
@@ -101,7 +126,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         $scope.event.notes = event.notes || $scope.event.notes || null;
         $scope.event.$update().then(function(evt) {
           $scope.event = null;
-          $scope.events = _.sortBy($scope.events, 'date');
+          updateEventLists($scope.events);
           $scope.eventPopup.hide();
         });
       }
@@ -113,7 +138,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         _.remove($scope.events, function(e) {
           return e.$id() === removedEventId;
         });
-        $scope.events = _.sortBy($scope.events, 'date');
+        updateEventLists($scope.events);
       });
     };
 
@@ -169,7 +194,8 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         }
         return event;
       });
-      $scope.events = _.sortBy(events, 'date');
+      $scope.events = events;
+      updateEventLists($scope.events);
       hideLoading();
     }, function() {
       $rootScope.adminMode = false;
