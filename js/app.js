@@ -71,8 +71,8 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       },
 
       updateEventLists: function(allEvents) {
-        $scope.upcomingEvents = $scope.private.getUpcomingSortedEvents(allEvents);
-        $scope.pastEvents = $scope.private.getPastSortedEvents(allEvents);
+        $rootScope.upcomingEvents = $scope.private.getUpcomingSortedEvents(allEvents);
+        $rootScope.pastEvents = $scope.private.getPastSortedEvents(allEvents);
       },
 
       // loader management
@@ -189,25 +189,37 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       $scope.eventDetailsPopup.remove();
     });
 
-    // bootstrap
-    $scope.private.showLoading();
-    Events.all().then(function(events) {
-      _.map(events, function(event) {
-        event.attendance = _.countBy(_.filter(event.attendees, 'confirmed'), 'role');
-        if (_.isEmpty(event.attendance)) {
-          event.attendance = null;
-        }
-        return event;
+    $scope.loadData = function() {
+      $scope.private.showLoading();
+      Events.all().then(function(events) {
+        _.map(events, function(event) {
+          event.attendance = _.countBy(_.filter(event.attendees, 'confirmed'), 'role');
+          if (_.isEmpty(event.attendance)) {
+            event.attendance = null;
+          }
+          return event;
+        });
+        $rootScope.events = events;
+        $scope.private.updateEventLists($rootScope.events);
+        $scope.private.hideLoading();
+        $rootScope.dataLoaded = true;
+      }, function() {
+        $rootScope.adminMode = false;
+        $rootScope.events = [];
+        $scope.private.hideLoading();
+        $rootScope.dataLoaded = true;
+        alert(':(\nNon riesco a contattare il database!\nRiprova tra qualche istante.');
       });
-      $rootScope.events = events;
-      $scope.private.updateEventLists($rootScope.events);
-      $scope.private.hideLoading();
-    }, function() {
-      $rootScope.adminMode = false;
-      $rootScope.events = [];
-      $scope.private.hideLoading();
-      alert(':(\nNon riesco a contattare il database!\nRiprova tra qualche istante.');
-    });
+    };
+
+    // bootstrap
+    if ($rootScope.adminMode) {
+      $scope.loadData();
+    } else {
+      if (!$rootScope.dataLoaded) {
+        $scope.loadData();
+      }
+    }
 
   }
 ]);

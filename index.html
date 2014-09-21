@@ -35,6 +35,9 @@
       <ion-nav-buttons side="right" ng-if="adminMode">
         <button class="button button-icon icon ion-plus-circled" ng-click="openEventPopup()"></button>
       </ion-nav-buttons>
+      <ion-nav-buttons side="right" ng-if="!adminMode">
+        <button class="button button-icon icon ion-refresh" ng-click="loadData()"></button>
+      </ion-nav-buttons>
       <ion-content>
         <ion-list
           show-delete="showDelete"
