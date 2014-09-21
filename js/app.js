@@ -212,7 +212,6 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
   }
 ]);
 
-
 app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events',
   function($rootScope, $scope, $stateParams, Events) {
 
@@ -222,6 +221,7 @@ app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events
         $scope.roles = _.groupBy($scope.event.attendees, 'role');
       }
     });
+
     $scope.updateEvent = function() {
       $scope.event.$update();
     };
