@@ -221,7 +221,6 @@ app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events
         $scope.roles = _.groupBy($scope.event.attendees, 'role');
       }
     });
-
     $scope.updateEvent = function() {
       $scope.event.$update();
     };
