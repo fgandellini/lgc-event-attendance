@@ -15,26 +15,28 @@ var app = angular.module('lgcAttendance', ['config', 'ionic', 'lgcAttendance.ser
 app.filter('newlines', function() {
   return function(text) {
     return text.replace(/\n/g, '<br/>');
-  }
-})
-
-app.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
-    .state('events', {
-      url: '/events?token',
-      templateUrl: 'events.html'
-    })
-    .state('new', {
-      url: '/events/new',
-      templateUrl: 'attendees.html'
-    })
-    .state('attendees', {
-      url: '/events/:eventId/attendees',
-      templateUrl: 'attendees.html'
-    });
-
-  $urlRouterProvider.otherwise('/events');
+  };
 });
+
+app.config(['$stateProvider', '$urlRouterProvider',
+  function($stateProvider, $urlRouterProvider) {
+    $stateProvider
+      .state('events', {
+        url: '/events?token',
+        templateUrl: 'events.html'
+      })
+      .state('new', {
+        url: '/events/new',
+        templateUrl: 'attendees.html'
+      })
+      .state('attendees', {
+        url: '/events/:eventId/attendees',
+        templateUrl: 'attendees.html'
+      });
+
+    $urlRouterProvider.otherwise('/events');
+  }
+]);
 
 app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', 'Events',
   function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, Events) {
@@ -48,28 +50,50 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
     $scope.showDelete = false;
     $scope.listCanSwipe = true;
 
-    var updateCurrentDayTime = function() {
-      var now = new Date().toISOString();
-      $scope.now = now.slice(0, 10) + ' ' + now.slice(11, 16);
-    };
+    $scope.private = {
+      updateCurrentDayTime: function() {
+        var now = new Date().toISOString();
+        $scope.now = now.slice(0, 10) + ' ' + now.slice(11, 16);
+      },
 
-    var getPastSortedEvents = function(allEvents) {
-      updateCurrentDayTime();
-      return _.sortBy(_.filter(allEvents, function(e) {
-        return (e.date + ' ' + e.time) < $scope.now;
-      }), ['date', 'time']);
-    };
+      getPastSortedEvents: function(allEvents) {
+        $scope.private.updateCurrentDayTime();
+        return _.sortBy(_.filter(allEvents, function(e) {
+          return (e.date + ' ' + e.time) < $scope.now;
+        }), ['date', 'time']);
+      },
 
-    var getUpcomingSortedEvents = function(allEvents) {
-      updateCurrentDayTime();
-      return _.sortBy(_.filter(allEvents, function(e) {
-        return (e.date + ' ' + e.time) >= $scope.now;
-      }), ['date', 'time']);
-    };
+      getUpcomingSortedEvents: function(allEvents) {
+        $scope.private.updateCurrentDayTime();
+        return _.sortBy(_.filter(allEvents, function(e) {
+          return (e.date + ' ' + e.time) >= $scope.now;
+        }), ['date', 'time']);
+      },
 
-    var updateEventLists = function(allEvents) {
-      $scope.upcomingEvents = getUpcomingSortedEvents(allEvents);
-      $scope.pastEvents = getPastSortedEvents(allEvents);
+      updateEventLists: function(allEvents) {
+        $scope.upcomingEvents = $scope.private.getUpcomingSortedEvents(allEvents);
+        $scope.pastEvents = $scope.private.getPastSortedEvents(allEvents);
+      },
+
+      // loader management
+      showLoading: function() {
+        $ionicLoading.show({
+          template: '<i class="icon ion-loading-c loader"></i>'
+        });
+      },
+
+      hideLoading: function() {
+        $ionicLoading.hide();
+      },
+
+      // utility functions
+      initAttendees: function() {
+        return _.map(SINGERS, function(singer) {
+          singer.confirmed = false;
+          return singer;
+        });
+      },
+
     };
 
     $ionicModal.fromTemplateUrl('event-popup.html', {
@@ -109,10 +133,10 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         newEvent.clothing = e.clothing || null;
         newEvent.meetingTime = e.meetingTime || null;
         newEvent.notes = e.notes || null;
-        newEvent.attendees = initAttendees();
+        newEvent.attendees = $scope.private.initAttendees();
         newEvent.$save().then(function(evt) {
-          $scope.events.push(evt);
-          updateEventLists($scope.events);
+          $rootScope.events.push(evt);
+          $scope.private.updateEventLists($rootScope.events);
           $scope.eventPopup.hide();
         });
       } else { // update
@@ -126,7 +150,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         $scope.event.notes = event.notes || $scope.event.notes || null;
         $scope.event.$update().then(function(evt) {
           $scope.event = null;
-          updateEventLists($scope.events);
+          $scope.private.updateEventLists($rootScope.events);
           $scope.eventPopup.hide();
         });
       }
@@ -135,10 +159,10 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
     $scope.deleteEvent = function(event) {
       var removedEventId = event.$id();
       event.$remove().then(function(event) {
-        _.remove($scope.events, function(e) {
+        _.remove($rootScope.events, function(e) {
           return e.$id() === removedEventId;
         });
-        updateEventLists($scope.events);
+        $scope.private.updateEventLists($rootScope.events);
       });
     };
 
@@ -165,27 +189,8 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       $scope.eventDetailsPopup.remove();
     });
 
-    // loader management
-    var showLoading = function() {
-      $ionicLoading.show({
-        template: '<i class="icon ion-loading-c loader"></i>'
-      });
-    };
-
-    var hideLoading = function() {
-      $ionicLoading.hide();
-    };
-
-    // utility functions
-    var initAttendees = function() {
-      return _.map(SINGERS, function(singer) {
-        singer.confirmed = false;
-        return singer;
-      });
-    };
-
     // bootstrap
-    showLoading();
+    $scope.private.showLoading();
     Events.all().then(function(events) {
       _.map(events, function(event) {
         event.attendance = _.countBy(_.filter(event.attendees, 'confirmed'), 'role');
@@ -194,24 +199,27 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         }
         return event;
       });
-      $scope.events = events;
-      updateEventLists($scope.events);
-      hideLoading();
+      $rootScope.events = events;
+      $scope.private.updateEventLists($rootScope.events);
+      $scope.private.hideLoading();
     }, function() {
       $rootScope.adminMode = false;
-      $scope.events = [];
-      hideLoading();
+      $rootScope.events = [];
+      $scope.private.hideLoading();
       alert(':(\nNon riesco a contattare il database!\nRiprova tra qualche istante.');
     });
 
   }
 ]);
 
-app.controller('AttendeesCtrl', ['$scope', '$stateParams', 'Events',
-  function($scope, $stateParams, Events) {
-    Events.getById($stateParams.eventId).then(function(event) {
-      $scope.event = event;
-      $scope.roles = _.groupBy($scope.event.attendees, 'role');
+app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events',
+  function($rootScope, $scope, $stateParams, Events) {
+
+    _.forEach($rootScope.events, function(evt) {
+      if (evt.$id() === $stateParams.eventId) {
+        $scope.event = evt;
+        $scope.roles = _.groupBy($scope.event.attendees, 'role');
+      }
     });
 
     $scope.updateEvent = function() {

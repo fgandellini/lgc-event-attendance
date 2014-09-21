@@ -1,0 +1,17 @@
+.input-label { width: 10%; }
+
+.details { color: #ccc; }
+
+textarea { height: 200px; }
+
+.event-name { font-weight: bold; }
+
+.loader { font-size: 50px; }
+
+.s { color: #aa0000; } 
+.ms { color: #ff8326; } 
+.a { color: #008000; } 
+.t { color: #0000ff; } 
+.b { color: #000042; }
+
+.notes { font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; }
