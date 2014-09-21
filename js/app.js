@@ -212,6 +212,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
   }
 ]);
 
+
 app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events',
   function($rootScope, $scope, $stateParams, Events) {
 
