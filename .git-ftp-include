@@ -1,2 +1,2 @@
-dist/js/app.js:js/app.js
-dist/js/app.js:js/config.js
+js/app.js:../js/app.js
+js/app.js:../js/config.js
