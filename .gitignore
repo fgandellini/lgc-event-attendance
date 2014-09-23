@@ -1,5 +1,7 @@
 js/config.js
 dist/js/app.js
 
+*.sublime-workspace
+
 bower_components/
 node_modules/
