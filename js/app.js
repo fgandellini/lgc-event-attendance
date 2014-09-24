@@ -89,7 +89,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       // utility functions
       initAttendees: function() {
         return _.map(SINGERS, function(singer) {
-          singer.confirmed = false;
+          singer.confirmed = 'no';
           return singer;
         });
       },
