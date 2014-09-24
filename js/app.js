@@ -133,6 +133,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         newEvent.clothing = e.clothing || null;
         newEvent.meetingTime = e.meetingTime || null;
         newEvent.notes = e.notes || null;
+        newEvent.privateNotes = e.privateNotes || null;
         newEvent.attendees = $scope.private.initAttendees();
         newEvent.$save().then(function(evt) {
           $rootScope.events.push(evt);
@@ -148,6 +149,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         $scope.event.clothing = event.clothing || $scope.event.clothing || null;
         $scope.event.meetingTime = event.meetingTime || $scope.event.meetingTime || null;
         $scope.event.notes = event.notes || $scope.event.notes || null;
+        $scope.event.privateNotes = event.privateNotes || $scope.event.privateNotes || null;
         $scope.event.$update().then(function(evt) {
           $scope.event = null;
           $scope.private.updateEventLists($rootScope.events);
