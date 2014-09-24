@@ -12,12 +12,6 @@ services.factory('Events', ['$mongolabResourceHttp',
 
 var app = angular.module('lgcAttendance', ['config', 'ionic', 'lgcAttendance.services']);
 
-app.filter('newlines', function() {
-  return function(text) {
-    return text.replace(/\n/g, '<br/>');
-  };
-});
-
 app.config(['$stateProvider', '$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
     $stateProvider
