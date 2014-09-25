@@ -35,8 +35,9 @@ app.config(['$stateProvider', '$urlRouterProvider',
 app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', 'Events',
   function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, Events) {
 
-    // admin mode setup
+    // mode setup
     $rootScope.adminMode = ($stateParams.token === AUTH_TOKEN);
+    $rootScope.userMode = !$rootScope.adminMode;
 
     // current event (target of update)
     $scope.event = null;
@@ -50,18 +51,34 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         $scope.now = now.slice(0, 10) + ' ' + now.slice(11, 16);
       },
 
+      getEventsForUsers: function(allEvents) {
+        return _.filter(allEvents, 'confirmed');
+      },
+
+      getEventsToFilter: function(allEvents) {
+        var eventsToFilter = allEvents;
+        if ($rootScope.userMode) {
+          eventsToFilter = $scope.private.getEventsForUsers(allEvents);
+        }
+        return eventsToFilter;
+      },
+
       getPastSortedEvents: function(allEvents) {
         $scope.private.updateCurrentDayTime();
-        return _.sortBy(_.filter(allEvents, function(e) {
+        var eventsToFilter = $scope.private.getEventsToFilter(allEvents);
+        var pastSortedEvents = _.sortBy(_.filter(eventsToFilter, function(e) {
           return (e.date + ' ' + e.time) < $scope.now;
         }), ['date', 'time']);
+        return pastSortedEvents;
       },
 
       getUpcomingSortedEvents: function(allEvents) {
         $scope.private.updateCurrentDayTime();
-        return _.sortBy(_.filter(allEvents, function(e) {
+        var eventsToFilter = $scope.private.getEventsToFilter(allEvents);
+        var upcomingSortedEvents = _.sortBy(_.filter(eventsToFilter, function(e) {
           return (e.date + ' ' + e.time) >= $scope.now;
         }), ['date', 'time']);
+        return upcomingSortedEvents;
       },
 
       updateEventLists: function(allEvents) {
@@ -128,6 +145,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         newEvent.meetingTime = e.meetingTime || null;
         newEvent.notes = e.notes || null;
         newEvent.privateNotes = e.privateNotes || null;
+        newEvent.confirmed = e.confirmed || false;
         newEvent.attendees = $scope.private.initAttendees();
         newEvent.$save().then(function(evt) {
           $rootScope.events.push(evt);
@@ -144,6 +162,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         $scope.event.meetingTime = event.meetingTime || $scope.event.meetingTime || null;
         $scope.event.notes = event.notes || $scope.event.notes || null;
         $scope.event.privateNotes = event.privateNotes || $scope.event.privateNotes || null;
+        $scope.event.confirmed = event.confirmed || false;
         $scope.event.$update().then(function(evt) {
           $scope.event = null;
           $scope.private.updateEventLists($rootScope.events);
