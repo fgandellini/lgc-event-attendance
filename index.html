@@ -257,6 +257,10 @@
               <span class="input-label"><i class="icon ion-clipboard"></i></span>
               <textarea placeholder="Note" ng-model="event.notes"></textarea>
             </label>
+            <label class="item item-input">
+              <span class="input-label"><i class="icon ion-eye-disabled"></i></span>
+              <textarea placeholder="Note Private" ng-model="event.privateNotes"></textarea>
+            </label>
           </div>
           <div class="padding">
             <button type="submit" class="button button-block button-positive">{{popupConfirmButton}}</button>
@@ -302,6 +306,10 @@
           <ion-item class="item-icon-left" ng-if="event.notes">
             <i class="icon ion-clipboard"></i>
             <pre class="notes">{{event.notes}}</pre>
+          </ion-item>
+          <ion-item class="item-icon-left" ng-if="adminMode && event.privateNotes">
+            <i class="icon ion-eye-disabled"></i>
+            <pre class="notes">{{event.privateNotes}}</pre>
           </ion-item>
         </ion-list>
       </ion-content>
