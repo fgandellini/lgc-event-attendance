@@ -2,7 +2,7 @@
 <html ng-app="lgcAttendance">
   <head>
     <meta charset="utf-8">
-    <title>Promemoria Eventi LGC</title>
+    <title>LGC</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -31,7 +31,7 @@
       <ion-nav-buttons side="right" ng-if="adminMode">
         <button class="button button-icon icon ion-plus-circled" ng-click="openEventPopup()"></button>
       </ion-nav-buttons>
-      <ion-nav-buttons side="right" ng-if="!adminMode">
+      <ion-nav-buttons side="right" ng-if="userMode">
         <button class="button button-icon icon ion-refresh" ng-click="loadData()"></button>
       </ion-nav-buttons>
       <ion-content>
@@ -129,7 +129,7 @@
       <ion-content>
         <ion-list>
           <div class="item item-divider"><i class="icon ion-record s"></i>&nbsp;Soprani</div>
-          <ion-item ng-if="!adminMode" 
+          <ion-item ng-if="userMode" 
             ng-repeat="attendee in roles.s"
             class="item-icon-right">
             {{attendee.name}}
@@ -143,7 +143,7 @@
             {{attendee.name}}
           </ion-tristate-toggle>
           <div class="item item-divider"><i class="icon ion-record ms"></i>&nbsp;Mezzi Soprani</div>
-          <ion-item ng-if="!adminMode" 
+          <ion-item ng-if="userMode" 
             ng-repeat="attendee in roles.ms"
             class="item-icon-right">
             {{attendee.name}}
@@ -157,7 +157,7 @@
             {{attendee.name}}
           </ion-tristate-toggle>
           <div class="item item-divider"><i class="icon ion-record a"></i>&nbsp;Contralti</div>
-          <ion-item ng-if="!adminMode" 
+          <ion-item ng-if="userMode" 
             ng-repeat="attendee in roles.a"
             class="item-icon-right">
             {{attendee.name}}
@@ -171,7 +171,7 @@
             {{attendee.name}}
           </ion-tristate-toggle>
           <div class="item item-divider"><i class="icon ion-record t"></i>&nbsp;Tenori</div>
-          <ion-item ng-if="!adminMode" 
+          <ion-item ng-if="userMode" 
             ng-repeat="attendee in roles.t"
             class="item-icon-right">
             {{attendee.name}}
@@ -185,7 +185,7 @@
             {{attendee.name}}
           </ion-tristate-toggle>
           <div class="item item-divider"><i class="icon ion-record b"></i>&nbsp;Bassi</div>
-          <ion-item ng-if="!adminMode" 
+          <ion-item ng-if="userMode" 
             ng-repeat="attendee in roles.b"
             class="item-icon-right">
             {{attendee.name}}
@@ -216,6 +216,9 @@
               <span class="input-label"><i class="icon ion-quote"></i></span>
               <input type="text" placeholder="Nome" ng-model="event.name">
             </label>
+            <ion-toggle toggle-class="toggle-balanced" ng-model="event.confirmed">
+              Confermato
+            </ion-toggle>
             <div class="item item-divider">Tipo</div>
             <label class="item item-radio">
               <input type="radio" name="type" ng-model="event.type" value="concert">
@@ -256,6 +259,10 @@
             <label class="item item-input">
               <span class="input-label"><i class="icon ion-clipboard"></i></span>
               <textarea placeholder="Note" ng-model="event.notes"></textarea>
+            </label>
+            <label class="item item-input">
+              <span class="input-label"><i class="icon ion-eye-disabled"></i></span>
+              <textarea placeholder="Note Private" ng-model="event.privateNotes"></textarea>
             </label>
           </div>
           <div class="padding">
@@ -302,6 +309,10 @@
           <ion-item class="item-icon-left" ng-if="event.notes">
             <i class="icon ion-clipboard"></i>
             <pre class="notes">{{event.notes}}</pre>
+          </ion-item>
+          <ion-item class="item-icon-left" ng-if="adminMode && event.privateNotes">
+            <i class="icon ion-eye-disabled"></i>
+            <pre class="notes">{{event.privateNotes}}</pre>
           </ion-item>
         </ion-list>
       </ion-content>
