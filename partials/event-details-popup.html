@@ -1,0 +1,43 @@
+<div class="modal">
+  <ion-header-bar class="bar-positive">
+    <button class="button button-clear button-icon ion-arrow-left-c" ng-click="closeEventDetailsPopup()"></button>
+    <h1 class="title">
+      <i class="icon ion-music-note" ng-if="event.type === 'concert'"></i>
+      <i class="icon ion-heart" ng-if="event.type === 'wedding'"></i>
+      <i class="icon ion-star" ng-if="event.type === 'generic'"></i>
+      {{event.name}}
+    </h1>
+  </ion-header-bar>
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-icon-left" ng-if="event.date">
+        <i class="icon ion-calendar"></i>
+        {{event.date | date:'EEEE d MMMM yyyy'}}
+      </ion-item>
+      <ion-item class="item-icon-left" ng-if="event.time">
+        <i class="icon ion-clock"></i>
+        {{event.time}}
+      </ion-item>
+      <ion-item class="item-icon-left item-text-wrap" ng-if="event.location">
+        <i class="icon ion-location"></i>
+        {{event.location}}
+      </ion-item>
+      <ion-item class="item-icon-left item-text-wrap" ng-if="event.clothing">
+        <i class="icon ion-person"></i>
+        {{event.clothing}}
+      </ion-item>
+      <ion-item class="item-icon-left" ng-if="event.meetingTime">
+        <i class="icon ion-arrow-shrink"></i>
+        Ritrovo alle ore {{event.meetingTime}}
+      </ion-item>
+      <ion-item class="item-icon-left" ng-if="event.notes">
+        <i class="icon ion-clipboard"></i>
+        <pre class="notes">{{event.notes}}</pre>
+      </ion-item>
+      <ion-item class="item-icon-left" ng-if="adminMode && event.privateNotes">
+        <i class="icon ion-eye-disabled"></i>
+        <pre class="notes">{{event.privateNotes}}</pre>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</div>

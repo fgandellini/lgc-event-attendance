@@ -10,30 +10,33 @@ services.factory('Events', ['$mongolabResourceHttp',
   }
 ]);
 
-var app = angular.module('lgcAttendance', ['config', 'ionic', 'oc.lazyLoad', 'lgcAttendance.services']);
+var app = angular.module('lgcAttendance', ['config', 'ionic', 'lgcAttendance.services']);
 
 app.config(['$stateProvider', '$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('events', {
         url: '/events?token',
-        templateUrl: 'events.html'
+        controller: 'EventsCtrl',
+        templateUrl: 'partials/events.html'
       })
       .state('new', {
         url: '/events/new',
-        templateUrl: 'attendees.html'
+        controller: 'AttendeesCtrl',
+        templateUrl: 'partials/attendees.html'
       })
       .state('attendees', {
         url: '/events/:eventId/attendees',
-        templateUrl: 'attendees.html'
+        controller: 'AttendeesCtrl',
+        templateUrl: 'partials/attendees.html'
       });
 
     $urlRouterProvider.otherwise('/events');
   }
 ]);
 
-app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', '$ocLazyLoad', 'Events',
-  function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, $ocLazyLoad, Events) {
+app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', 'Events',
+  function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, Events) {
 
     // mode setup
     $rootScope.adminMode = ($stateParams.token === AUTH_TOKEN);
@@ -107,7 +110,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
 
     };
 
-    $ionicModal.fromTemplateUrl('event-popup.html', {
+    $ionicModal.fromTemplateUrl('partials/event-popup.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
@@ -181,7 +184,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       });
     };
 
-    $ionicModal.fromTemplateUrl('event-details-popup.html', {
+    $ionicModal.fromTemplateUrl('partials/event-details-popup.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
