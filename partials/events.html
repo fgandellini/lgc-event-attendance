@@ -1,0 +1,98 @@
+<ion-view name="events-view" title="Eventi LGC" ng-controller="EventsCtrl">
+  <ion-nav-buttons side="left" ng-if="adminMode">
+    <button class="button button-icon icon ion-minus-circled" ng-click="toggleDelete()"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right" ng-if="adminMode">
+    <button class="button button-icon icon ion-plus-circled" ng-click="openEventPopup()"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right" ng-if="userMode">
+    <button class="button button-icon icon ion-refresh" ng-click="loadData()"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list
+      show-delete="showDelete"
+      can-swipe="listCanSwipe">
+      <ion-item ng-repeat="event in upcomingEvents" href="#/events/{{event.$id()}}/attendees">
+        <h2 class="event-name">
+          <i class="icon ion-music-note" ng-if="event.type === 'concert'"></i>
+          <i class="icon ion-heart" ng-if="event.type === 'wedding'"></i>
+          <i class="icon ion-star" ng-if="event.type === 'generic'"></i>
+          {{event.name}}
+          <i class="icon ion-person details" ng-if="event.clothing"></i>
+          <i class="icon ion-arrow-shrink details" ng-if="event.meetingTime"></i>
+          <i class="icon ion-clipboard details" ng-if="event.notes"></i>
+        </h2>
+        <p>
+          <span ng-if="event.date"><i class="icon ion-calendar">
+            </i>&nbsp;{{event.date | date:'EEE d MMM yyyy'}}
+          </span>
+          <span ng-if="event.time"><i class="icon ion-clock">
+            </i>&nbsp;{{event.time}}
+          </span>
+          <br ng-if="event.date || event.time" />
+          <span ng-if="event.location">
+            <i class="icon ion-location"></i>&nbsp;{{event.location}}
+          </span>
+          <br ng-if="event.location" />
+          <span ng-if="event.attendance">
+            <i class="icon ion-person-stalker"></i>
+            <span class="s" ng-if="event.attendance.s">S:{{event.attendance.s}}</span>
+            <span class="ms" ng-if="event.attendance.ms">&nbsp;MS:{{event.attendance.ms}}</span>
+            <span class="a" ng-if="event.attendance.a">&nbsp;A:{{event.attendance.a}}</span>
+            <span class="t" ng-if="event.attendance.t">&nbsp;T:{{event.attendance.t}}</span>
+            <span class="b" ng-if="event.attendance.b">&nbsp;B:{{event.attendance.b}}</span>
+          </span>
+        </p>
+        <ion-delete-button class="ion-minus-circled" ng-click="deleteEvent(event)" ng-if="adminMode">
+        </ion-delete-button>
+        <ion-option-button class="button-positive" ng-click="openEventPopup(event)" ng-if="adminMode">
+          <i class="icon ion-edit"></i>
+        </ion-option-button>
+        <ion-option-button class="button-dark" ng-click="openEventDetailsPopup(event)">
+          <i class="icon ion-information"></i>
+        </ion-option-button>
+      </ion-item>
+      <div class="item item-divider">Eventi Passati</div>
+      <ion-item ng-repeat="event in pastEvents" href="#/events/{{event.$id()}}/attendees">
+        <h2 class="event-name">
+          <i class="icon ion-music-note" ng-if="event.type === 'concert'"></i>
+          <i class="icon ion-heart" ng-if="event.type === 'wedding'"></i>
+          <i class="icon ion-star" ng-if="event.type === 'generic'"></i>
+          {{event.name}}
+          <i class="icon ion-person details" ng-if="event.clothing"></i>
+          <i class="icon ion-arrow-shrink details" ng-if="event.meetingTime"></i>
+          <i class="icon ion-clipboard details" ng-if="event.notes"></i>
+        </h2>
+        <p>
+          <span ng-if="event.date"><i class="icon ion-calendar">
+            </i>&nbsp;{{event.date | date:'EEE d MMM yyyy'}}
+          </span>
+          <span ng-if="event.time"><i class="icon ion-clock">
+            </i>&nbsp;{{event.time}}
+          </span>
+          <br ng-if="event.date || event.time" />
+          <span ng-if="event.location">
+            <i class="icon ion-location"></i>&nbsp;{{event.location}}
+          </span>
+          <br ng-if="event.location" />
+          <span ng-if="event.attendance">
+            <i class="icon ion-person-stalker"></i>
+            <span class="s" ng-if="event.attendance.s">S:{{event.attendance.s}}</span>
+            <span class="ms" ng-if="event.attendance.ms">&nbsp;MS:{{event.attendance.ms}}</span>
+            <span class="a" ng-if="event.attendance.a">&nbsp;A:{{event.attendance.a}}</span>
+            <span class="t" ng-if="event.attendance.t">&nbsp;T:{{event.attendance.t}}</span>
+            <span class="b" ng-if="event.attendance.b">&nbsp;B:{{event.attendance.b}}</span>
+          </span>
+        </p>
+        <ion-delete-button class="ion-minus-circled" ng-click="deleteEvent(event)" ng-if="adminMode">
+        </ion-delete-button>
+        <ion-option-button class="button-positive" ng-click="openEventPopup(event)" ng-if="adminMode">
+          <i class="icon ion-edit"></i>
+        </ion-option-button>
+        <ion-option-button class="button-dark" ng-click="openEventDetailsPopup(event)">
+          <i class="icon ion-information"></i>
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

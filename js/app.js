@@ -17,15 +17,18 @@ app.config(['$stateProvider', '$urlRouterProvider',
     $stateProvider
       .state('events', {
         url: '/events?token',
-        templateUrl: 'events.html'
+        controller: 'EventsCtrl',
+        templateUrl: 'partials/events.html'
       })
       .state('new', {
         url: '/events/new',
-        templateUrl: 'attendees.html'
+        controller: 'AttendeesCtrl',
+        templateUrl: 'partials/attendees.html'
       })
       .state('attendees', {
         url: '/events/:eventId/attendees',
-        templateUrl: 'attendees.html'
+        controller: 'AttendeesCtrl',
+        templateUrl: 'partials/attendees.html'
       });
 
     $urlRouterProvider.otherwise('/events');
@@ -107,7 +110,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
 
     };
 
-    $ionicModal.fromTemplateUrl('event-popup.html', {
+    $ionicModal.fromTemplateUrl('partials/event-popup.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
@@ -181,7 +184,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       });
     };
 
-    $ionicModal.fromTemplateUrl('event-details-popup.html', {
+    $ionicModal.fromTemplateUrl('partials/event-details-popup.html', {
       scope: $scope,
       animation: 'slide-in-up'
     }).then(function(modal) {

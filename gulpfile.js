@@ -7,9 +7,12 @@ var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
 var useref = require('gulp-useref');
 var gulpif = require('gulp-if');
+var rename = require('gulp-rename');
 var ftp = require('gulp-ftp');
 var ftpAccounts = require('./ftp-accounts.js');
 var minimist = require('minimist');
+var rev = require('gulp-rev');
+var revReplace = require('gulp-rev-replace');
 
 gulp.task('clean', function(done) {
   return gulp.src('dist', {
@@ -18,7 +21,7 @@ gulp.task('clean', function(done) {
     .pipe(rm());
 });
 
-gulp.task('img', ['clean'], function(done) {
+gulp.task('imagemin', function(done) {
   return gulp.src('img/*')
     .pipe(imagemin({
       progressive: true,
@@ -27,6 +30,11 @@ gulp.task('img', ['clean'], function(done) {
       }],
       use: [pngcrush()]
     }))
+    .pipe(gulp.dest('img-min'));
+});
+
+gulp.task('img', ['clean'], function(done) {
+  return gulp.src('img-min/*')
     .pipe(gulp.dest('dist/img'));
 });
 
@@ -41,12 +49,22 @@ gulp.task('assets', ['clean'], function(done) {
     .pipe(assets)
     .pipe(gulpif('*.js', uglify()))
     .pipe(gulpif('*.css', minifyCSS()))
+    .pipe(rev())
     .pipe(assets.restore())
     .pipe(useref())
+    .pipe(revReplace())
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('html', ['assets'], function(done) {
+gulp.task('partials', ['assets'], function(done) {
+  return gulp.src('partials/*.html')
+    .pipe(minifyHTML({
+      quotes: true
+    }))
+    .pipe(gulp.dest('dist/partials'));
+});
+
+gulp.task('html', ['partials'], function(done) {
   return gulp.src('dist/index.html')
     .pipe(minifyHTML({
       quotes: true
@@ -63,7 +81,13 @@ var deployOptions = {
 
 var options = minimist(process.argv.slice(2), deployOptions);
 
-gulp.task('deploy', function() {
+gulp.task('copy-config', ['build'], function() {
+  return gulp.src('js/config-' + options.env + '.js')
+    .pipe(rename('js/config.js'))
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('deploy', ['copy-config'], function() {
   return gulp.src('dist/**/*')
     .pipe(ftp(ftpAccounts[options.env]));
 });

@@ -1,5 +1,7 @@
 ftp-accounts.js
 js/config.js
+js/config-test.js
+js/config-prod.js
 
 *.sublime-workspace
 
