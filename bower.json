@@ -19,6 +19,7 @@
     "angularjs-mongolab": "~1.0.0-RC1",
     "lodash": "~2.4.1",
     "ionic": "driftyco/ionic-bower#master",
-    "angular-i18n": "~1.2.25"
+    "angular-i18n": "~1.2.25",
+    "oclazyload": "~0.3.8"
   }
 }

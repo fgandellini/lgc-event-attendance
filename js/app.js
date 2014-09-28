@@ -10,7 +10,7 @@ services.factory('Events', ['$mongolabResourceHttp',
   }
 ]);
 
-var app = angular.module('lgcAttendance', ['config', 'ionic', 'lgcAttendance.services']);
+var app = angular.module('lgcAttendance', ['config', 'ionic', 'oc.lazyLoad', 'lgcAttendance.services']);
 
 app.config(['$stateProvider', '$urlRouterProvider',
   function($stateProvider, $urlRouterProvider) {
@@ -32,8 +32,8 @@ app.config(['$stateProvider', '$urlRouterProvider',
   }
 ]);
 
-app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', 'Events',
-  function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, Events) {
+app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootScope', '$scope', '$state', '$ionicModal', '$ionicLoading', '$ocLazyLoad', 'Events',
+  function(AUTH_TOKEN, SINGERS, $stateParams, $rootScope, $scope, $state, $ionicModal, $ionicLoading, $ocLazyLoad, Events) {
 
     // mode setup
     $rootScope.adminMode = ($stateParams.token === AUTH_TOKEN);

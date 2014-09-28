@@ -7,9 +7,11 @@ var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
 var useref = require('gulp-useref');
 var gulpif = require('gulp-if');
+var rename = require('gulp-rename');
 var ftp = require('gulp-ftp');
 var ftpAccounts = require('./ftp-accounts.js');
 var minimist = require('minimist');
+
 
 gulp.task('clean', function(done) {
   return gulp.src('dist', {
@@ -63,7 +65,13 @@ var deployOptions = {
 
 var options = minimist(process.argv.slice(2), deployOptions);
 
-gulp.task('deploy', function() {
+gulp.task('copy-config', function() {
+  return gulp.src('js/config-' + options.env + '.js')
+    .pipe(rename('js/config.js'))
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('deploy', ['copy-config'], function() {
   return gulp.src('dist/**/*')
     .pipe(ftp(ftpAccounts[options.env]));
 });
