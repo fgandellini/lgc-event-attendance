@@ -1,7 +1,8 @@
+ftp-accounts.js
 js/config.js
-dist/js/app.js
 
 *.sublime-workspace
 
+dist/
 bower_components/
 node_modules/

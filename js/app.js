@@ -227,7 +227,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       });
     };
 
-    // bootstrap
+    // app bootstrap
     if ($rootScope.adminMode) {
       $scope.loadData();
     } else {
