@@ -95,6 +95,7 @@ IonicModule
           '<input type="checkbox">' +
           '<div class="track">' +
           '<div class="handle"><i class="icon"></i></div>' +
+          '<i class="icon ion-close"></i><i class="icon ion-help"></i><i class="icon ion-checkmark"></i>' +
           '</div>' +
           '</label>' +
           '</div>',
@@ -121,34 +122,61 @@ IonicModule
           }
 
           return function($scope, $element, $attr) {
-            var el, checkbox, track, handle;
+            var el, checkbox, track, handle, icon;
 
             el = $element[0].getElementsByTagName('label')[0];
             checkbox = el.children[0];
             track = el.children[1];
             handle = track.children[0];
+            icon = angular.element(handle.children[0]);
 
-            checkbox.indeterminate = false;
+            checkbox.indeterminate = true;
+            icon.removeClass().addClass('icon').addClass('ion-help');
 
             var ngModelController = angular.element(checkbox).controller('ngModel');
+
+            var currentState = 0;
 
             $scope.toggle = new ionic.views.Toggle({
               el: el,
               track: track,
               checkbox: checkbox,
               handle: handle,
+              icon: icon,
               onChange: function() {
-                if (checkbox.checked) {
-                  checkbox.indeterminate = !checkbox.indeterminate;
-                  //handle.children[0].removeClass('ion-location');
-                  //handle.children[0].addClass('ion-clock');
-                  ngModelController.$setViewValue(true);
-                } else {
-                  checkbox.indeterminate = !checkbox.indeterminate;
-                  //handle.children[0].removeClass('ion-clock');
-                  //handle.children[0].addClass('ion-location');
-                  ngModelController.$setViewValue(false);
+
+                //icon.removeClass().addClass('icon ion-help');
+                //icon.removeClass().addClass('icon ion-checkmark');
+                //icon.removeClass().addClass('icon ion-close');
+
+
+                //checkbox.indeterminate = !checkbox.indeterminate;
+
+                if (!checkbox.checked && !checkbox.indeterminate) {
+                  icon.removeClass().addClass('icon').addClass('ion-checkmark');
+                } else if (!checkbox.checked && checkbox.indeterminate) {
+                  icon.removeClass().addClass('icon').addClass('ion-help');
+                } else if (checkbox.checked && !checkbox.indeterminate) {
+                  icon.removeClass().addClass('icon').addClass('ion-close');
                 }
+
+
+
+                console.log('checked: ' + checkbox.checked + ' indeterminate: ' + checkbox.indeterminate);
+
+                // if (checkbox.checked && checkbox.indeterminate) {
+                //   checkbox.indeterminate = false;
+
+                // } else if (!checkbox.checked && checkbox.indeterminate) {
+                //   checkbox.indeterminate = false;
+                // }
+
+                // if (checkbox.checked) {
+                //   //ngModelController.$setViewValue(true);
+                // } else {
+                //   //ngModelController.$setViewValue(false);
+                // }
+
                 $scope.$apply();
               }
             });

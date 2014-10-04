@@ -8,13 +8,23 @@
         {{attendee.name}}
         <i ng-if="attendee.confirmed" class="icon ion-checkmark"></i>
       </ion-item>
-      <ion-toggle ng-if="adminMode"
+      <ion-item ng-if="adminMode"
         ng-repeat="attendee in roles.s"
         ng-model="attendee.confirmed"
         ng-change="updateEvent()"
-        toggle-class="toggle-balanced">
+        toggle-class="toggle-balanced"
+        class="item-button-right">
         {{attendee.name}}
-      </ion-toggle>
+        <button class="button no" ng-class="{button-assertive: !attendee.confirmed}">
+          <i class="icon ion-close"></i>
+        </button>
+        <button class="button maybe" ng-class="{button-assertive: !attendee.confirmed}">
+          <i class="icon ion-help"></i>
+        </button>
+        <button class="button yes" ng-class="{button-assertive: !attendee.confirmed}">
+          <i class="icon ion-checkmark"></i>
+        </button>
+      </ion-item>
       <div class="item item-divider"><i class="icon ion-record ms"></i>&nbsp;Mezzi Soprani</div>
       <ion-item ng-if="userMode" 
         ng-repeat="attendee in roles.ms"
@@ -22,13 +32,13 @@
         {{attendee.name}}
         <i ng-if="attendee.confirmed" class="icon ion-checkmark"></i>
       </ion-item>
-      <ion-toggle ng-if="adminMode"
+      <ion-tristate-toggle ng-if="adminMode"
         ng-repeat="attendee in roles.ms"
         ng-model="attendee.confirmed"
         ng-change="updateEvent()"
         toggle-class="toggle-balanced">
         {{attendee.name}}
-      </ion-toggle>
+      </ion-tristate-toggle>
       <div class="item item-divider"><i class="icon ion-record a"></i>&nbsp;Contralti</div>
       <ion-item ng-if="userMode" 
         ng-repeat="attendee in roles.a"
@@ -36,13 +46,13 @@
         {{attendee.name}}
         <i ng-if="attendee.confirmed" class="icon ion-checkmark"></i>
       </ion-item>
-      <ion-toggle ng-if="adminMode"
+      <ion-tristate-toggle ng-if="adminMode"
         ng-repeat="attendee in roles.a"
         ng-model="attendee.confirmed"
         ng-change="updateEvent()"
         toggle-class="toggle-balanced">
         {{attendee.name}}
-      </ion-toggle>
+      </ion-tristate-toggle>
       <div class="item item-divider"><i class="icon ion-record t"></i>&nbsp;Tenori</div>
       <ion-item ng-if="userMode" 
         ng-repeat="attendee in roles.t"
@@ -50,13 +60,13 @@
         {{attendee.name}}
         <i ng-if="attendee.confirmed" class="icon ion-checkmark"></i>
       </ion-item>
-      <ion-toggle ng-if="adminMode"
+      <ion-tristate-toggle ng-if="adminMode"
         ng-repeat="attendee in roles.t"
         ng-model="attendee.confirmed"
         ng-change="updateEvent()"
         toggle-class="toggle-balanced">
         {{attendee.name}}
-      </ion-toggle>
+      </ion-tristate-toggle>
       <div class="item item-divider"><i class="icon ion-record b"></i>&nbsp;Bassi</div>
       <ion-item ng-if="userMode" 
         ng-repeat="attendee in roles.b"
@@ -64,13 +74,13 @@
         {{attendee.name}}
         <i ng-if="attendee.confirmed" class="icon ion-checkmark"></i>
       </ion-item>
-      <ion-toggle ng-if="adminMode"
+      <ion-tristate-toggle ng-if="adminMode"
         ng-repeat="attendee in roles.b"
         ng-model="attendee.confirmed"
         ng-change="updateEvent()"
         toggle-class="toggle-balanced">
         {{attendee.name}}
-      </ion-toggle>
+      </ion-tristate-toggle>
     </ion-list>
   </ion-content>
 </ion-view>

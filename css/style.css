@@ -16,6 +16,8 @@ textarea { height: 200px; }
 
 .notes { font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; }
 
+.item-button-right > .button.maybe { right: 70px; }
+.item-button-right > .button.no { right: 117px; }
 
 /**
  * Toggle
@@ -79,7 +81,7 @@ textarea { height: 200px; }
   transition-property: background-color, border;
   display: inline-block;
   box-sizing: border-box;
-  width: 81px; /* 54px; */
+  width: 88px; /* 54px; */
   height: 32px;
   border: solid 2px #E5E5E5;
   border-radius: 20px;
@@ -116,16 +118,29 @@ textarea { height: 200px; }
     padding: 19px 35px;
     content: " "; }
 
+.toggle input + .track .icon {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  display: block;
+  text-align: center;
+  float: left;
+  color: #fff; }
+
+.toggle input + .track .handle .icon {
+  color: #000;
+}
+
 .toggle input:checked + .track .handle {
-  -webkit-transform: translate3d(49px, 0, 0);
-  -moz-transform: translate3d(49px, 0, 0);
-  transform: translate3d(49px, 0, 0);
+  -webkit-transform: translate3d(56px, 0, 0);
+  -moz-transform: translate3d(56px, 0, 0);
+  transform: translate3d(56px, 0, 0);
   background-color: #fff; }
 
 .toggle input:indeterminate + .track .handle {
-  -webkit-transform: translate3d(22px, 0, 0);
-  -moz-transform: translate3d(22px, 0, 0);
-  transform: translate3d(22px, 0, 0);
+  -webkit-transform: translate3d(28px, 0, 0);
+  -moz-transform: translate3d(28px, 0, 0);
+  transform: translate3d(28px, 0, 0);
   background-color: #fff; }
 
 .item-toggle.active {
