@@ -103,7 +103,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       // utility functions
       initAttendees: function() {
         return _.map(SINGERS, function(singer) {
-          singer.confirmed = 'no';
+          singer.confirmed = '';
           return singer;
         });
       },
@@ -148,7 +148,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         newEvent.meetingTime = e.meetingTime || null;
         newEvent.notes = e.notes || null;
         newEvent.privateNotes = e.privateNotes || null;
-        newEvent.confirmed = e.confirmed || false;
+        newEvent.confirmed = e.confirmed || '';
         newEvent.attendees = $scope.private.initAttendees();
         newEvent.$save().then(function(evt) {
           $rootScope.events.push(evt);
@@ -165,7 +165,7 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
         $scope.event.meetingTime = event.meetingTime || $scope.event.meetingTime || null;
         $scope.event.notes = event.notes || $scope.event.notes || null;
         $scope.event.privateNotes = event.privateNotes || $scope.event.privateNotes || null;
-        $scope.event.confirmed = event.confirmed || false;
+        $scope.event.confirmed = event.confirmed || '';
         $scope.event.$update().then(function(evt) {
           $scope.event = null;
           $scope.private.updateEventLists($rootScope.events);
@@ -211,7 +211,9 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       $scope.private.showLoading();
       Events.all().then(function(events) {
         _.map(events, function(event) {
-          event.attendance = _.countBy(_.filter(event.attendees, 'confirmed'), 'role');
+          event.attendance = _.countBy(_.filter(event.attendees, {
+            'confirmed': 'y'
+          }), 'role');
           if (_.isEmpty(event.attendance)) {
             event.attendance = null;
           }
@@ -245,6 +247,14 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
 app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events',
   function($rootScope, $scope, $stateParams, Events) {
 
+    $scope.roleNames = {
+      s: 'Soprani',
+      ms: 'Mezzi Soprani',
+      a: 'Contralti',
+      t: 'Tenori',
+      b: 'Bassi'
+    };
+
     _.forEach($rootScope.events, function(evt) {
       if (evt.$id() === $stateParams.eventId) {
         $scope.event = evt;
@@ -258,3 +268,21 @@ app.controller('AttendeesCtrl', ['$rootScope', '$scope', '$stateParams', 'Events
 
   }
 ]);
+
+app.filter('confirmation', function() {
+  return function(confirmation, button) {
+    var styleClass = 'button-light';
+    confirmation = confirmation || '';
+    button = button || '';
+
+    if (button === 'yes' && confirmation === 'y') {
+      styleClass = 'button-balanced'
+    } else if (button === 'maybe' && confirmation === 'm') {
+      styleClass = 'button-energized'
+    } else if (button === 'no' && confirmation === 'n') {
+      styleClass = 'button-assertive'
+    }
+
+    return styleClass;
+  };
+})
