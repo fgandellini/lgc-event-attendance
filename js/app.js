@@ -207,21 +207,25 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
       $scope.eventDetailsPopup.remove();
     });
 
+  // $scope.migrateDb = function() {
+  //   Events.all().then(function(events) {
+  //     _.each(events, function(event) {
+  //       event.confirmed = true;
+  //       _.each(event.attendees, function(attendee) {
+  //         if (attendee.confirmed === true) {
+  //           attendee.confirmed = 'y';
+  //         } else {
+  //           attendee.confirmed = 'n';
+  //         }
+  //       });
+  //       event.$update();
+  //     });
+  //   });
+  // };
+
     $scope.loadData = function() {
       $scope.private.showLoading();
-
-      var allEvents = Events.all();
-    // allEvents.then(function(events) {
-    //   _.each(events, function(event) {
-    //     event.confirmed = true;
-    //     _.each(event.attendees, function(attendee) {
-    //       attendee.confirmed = attendee.confirmed ? 'y' : 'n';
-    //     });
-    //     event.$update();
-    //   });
-    // });
-
-      allEvents.then(function(events) {
+      Events.all().then(function(events) {
         _.map(events, function(event) {
           event.attendance = _.countBy(_.filter(event.attendees, {
             'confirmed': 'y'
