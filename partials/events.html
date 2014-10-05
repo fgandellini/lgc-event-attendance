@@ -21,6 +21,7 @@
           <i class="icon ion-person details" ng-if="event.clothing"></i>
           <i class="icon ion-arrow-shrink details" ng-if="event.meetingTime"></i>
           <i class="icon ion-clipboard details" ng-if="event.notes"></i>
+          <i class="icon ion-checkmark details" ng-if="adminMode && event.confirmed"></i>
         </h2>
         <p>
           <span ng-if="event.date"><i class="icon ion-calendar">
@@ -62,6 +63,7 @@
           <i class="icon ion-person details" ng-if="event.clothing"></i>
           <i class="icon ion-arrow-shrink details" ng-if="event.meetingTime"></i>
           <i class="icon ion-clipboard details" ng-if="event.notes"></i>
+          <i class="icon ion-checkmark details" ng-if="adminMode && event.confirmed"></i>
         </h2>
         <p>
           <span ng-if="event.date"><i class="icon ion-calendar">

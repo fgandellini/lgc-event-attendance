@@ -209,7 +209,19 @@ app.controller('EventsCtrl', ['AUTH_TOKEN', 'SINGERS', '$stateParams', '$rootSco
 
     $scope.loadData = function() {
       $scope.private.showLoading();
-      Events.all().then(function(events) {
+
+      var allEvents = Events.all();
+    // allEvents.then(function(events) {
+    //   _.each(events, function(event) {
+    //     event.confirmed = true;
+    //     _.each(event.attendees, function(attendee) {
+    //       attendee.confirmed = attendee.confirmed ? 'y' : 'n';
+    //     });
+    //     event.$update();
+    //   });
+    // });
+
+      allEvents.then(function(events) {
         _.map(events, function(event) {
           event.attendance = _.countBy(_.filter(event.attendees, {
             'confirmed': 'y'
