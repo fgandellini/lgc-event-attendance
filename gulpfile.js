@@ -3,6 +3,7 @@ var rm = require('gulp-rimraf');
 var minifyHTML = require('gulp-minify-html');
 var minifyCSS = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
+var pump = require('pump');
 var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
 var useref = require('gulp-useref');
@@ -44,13 +45,16 @@ gulp.task('fonts', ['clean'], function(done) {
 });
 
 gulp.task('assets', ['clean'], function(done) {
-  var assets = useref.assets();
+  var cssAssets = useref.assets({ types: ['css'] });
+  var jsAssets = useref.assets({ types: ['js'] });
   return gulp.src('index.html')
-    .pipe(assets)
-    .pipe(gulpif('*.js', uglify()))
-    .pipe(gulpif('*.css', minifyCSS()))
+    .pipe(jsAssets)
+    .pipe(uglify())
     .pipe(rev())
-    .pipe(assets.restore())
+    .pipe(jsAssets.restore())
+    .pipe(cssAssets)
+    .pipe(minifyCSS())
+    .pipe(cssAssets.restore())
     .pipe(useref())
     .pipe(revReplace())
     .pipe(gulp.dest('dist'));
