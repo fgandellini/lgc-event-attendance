@@ -6,3 +6,4 @@ js/config*.js
 dist/
 bower_components/
 node_modules/
+old_config/

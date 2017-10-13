@@ -3,7 +3,6 @@ var rm = require('gulp-rimraf');
 var minifyHTML = require('gulp-minify-html');
 var minifyCSS = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
-var pump = require('pump');
 var imagemin = require('gulp-imagemin');
 var pngcrush = require('imagemin-pngcrush');
 var useref = require('gulp-useref');
@@ -85,13 +84,7 @@ var deployOptions = {
 
 var options = minimist(process.argv.slice(2), deployOptions);
 
-gulp.task('copy-config', ['build'], function() {
-  return gulp.src('js/config-' + options.env + '.js')
-    .pipe(rename('js/config.js'))
-    .pipe(gulp.dest('dist'));
-});
-
-gulp.task('deploy', ['copy-config'], function() {
+gulp.task('deploy', ['build'], function() {
   return gulp.src('dist/**/*')
     .pipe(ftp(ftpAccounts[options.env]));
 });

@@ -4,7 +4,9 @@
   "description": "A ionic app to keep tracking of LGC singers for each event",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy-test": "gulp deploy --env test",
+    "deploy-pro": "gulp deploy --env prod"
   },
   "repository": {
     "type": "git",
